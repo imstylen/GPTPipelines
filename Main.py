@@ -6,7 +6,7 @@ from Util import Writer
 #   filter           pipe        filter
 # (generator)===>===>===>===>===(ranker)
 # 
-# generation prompt -> out1.txt -> ranker prompt -> out2.txt
+# generation prompt -> out1.txt -> next prompt -> out2.txt
 
 def main():
     ###########################
@@ -39,14 +39,14 @@ def main():
         "out/article_outline.txt",
         writing_prompt=
             """
-                write a detailed outline split into 3 sections for an web article for busy parents of young children on the rank 1 party idea.
+                write a detailed outline divided into 3 sections for an web article intended for busy parents of young children on the rank 1 party idea.
             """
         )
     
     
     pipeline = []
-    pipeline.append(Pipe(idea_generator,idea_ranker))
-    pipeline.append(Pipe(idea_ranker,article_outliner))
+    pipeline.append(Pipe(idea_generator, idea_ranker))
+    pipeline.append(Pipe(idea_ranker, article_outliner))
     
     ###########################
     # Write the Article
@@ -59,7 +59,7 @@ def main():
             f"out/article{i}_draft.txt",
             writing_prompt=
                 f"""
-                    write the full text for only section {i} a web article in no more than 1000 words based on the provided outline.This section will be combined with the others to form the full article.
+                    write the full text for only section {i} of the web article. Use no more than 1000 words. The article is based on the provided outline.This section will be combined with the others to form the full article.
                 """
             )
         writers.append(article_writer)
@@ -75,8 +75,8 @@ def main():
             )
         editors.append(article_editor)
         
-        pipeline.append(Pipe(article_outliner,article_writer))
-        pipeline.append(Pipe(article_writer,article_editor))
+        pipeline.append(Pipe(article_outliner, article_writer))
+        pipeline.append(Pipe(article_writer, article_editor))
     
     for i,pipe in enumerate(pipeline):
         print(f"Step {i} of {len(pipeline)}:")

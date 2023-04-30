@@ -10,6 +10,7 @@ class IdeaGenerator(Filter):
         self.data_dict['field_word_limit'] = field_word_limit
     
     def generate_prompt(self) -> str:
+        previous = '\n'.join(self.data_dict['responses'])
         prompt = f"""Write a new idea following prompt delimited by triple backticks.
 
         prompt:
@@ -18,7 +19,7 @@ class IdeaGenerator(Filter):
         ```
         previous responses:
         ###
-        {self.data_dict['responses']}
+        {previous}
         ###
         
         format your response as json with the following fields:

@@ -1,8 +1,8 @@
 from OpenAIAssistant import OpenAIAssistant
 
 class Filter(OpenAIAssistant):
-    def __init__(self, api_key: str, out_file: str, num_requests = 1, model="gpt-3.5-turbo", temperature=0.0, max_tokens=2048):
-        super().__init__(api_key, out_file, model, temperature, max_tokens)
+    def __init__(self, api_key: str, out_file: str, num_requests = 1, model="gpt-3.5-turbo", temperature=0.0, max_tokens=2048,system_message:str = "you are a helpful assistant"):
+        super().__init__(api_key, out_file, model, temperature, max_tokens, system_message)
         self.did_run = False
         self.num_requests = num_requests
         self.input_filter = None
@@ -10,7 +10,8 @@ class Filter(OpenAIAssistant):
     def run(self):
         if self.input_filter is not None:
             with open(self.input_filter.out_file,"r") as file:
-                self.data_dict['input_filter_out_file'] = file.readlines()
+                self.data_dict['input_filter_out_file'] = file.read()
+                
                 
         self.execute(self.num_requests)
         self.did_run = True
