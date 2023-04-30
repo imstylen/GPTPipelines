@@ -3,7 +3,7 @@ from tqdm import tqdm
 
 
 class OpenAIAssistant:
-    def __init__(self, api_key: str,out_file: str, model = "gpt-3.5-turbo", temperature=0.7, max_tokens=500):
+    def __init__(self, api_key: str,out_file: str, model = "gpt-3.5-turbo", temperature=0.0, max_tokens=2048):
         openai.api_key = api_key
         self.model = model
         self.temperature = temperature
@@ -28,7 +28,7 @@ class OpenAIAssistant:
         response = openai.ChatCompletion.create(
             model=self.model,
             messages=[
-                {"role": "system", "content": "You are a helpful assistant to a software engineer"},
+                {"role": "system", "content": "You are a helpful assistant"},
                 {"role": "user", "content": prompt}
             ],
             temperature=self.temperature
@@ -38,14 +38,15 @@ class OpenAIAssistant:
     def process_response(self, response):
         self.data_dict['responses'].append(response['choices'][0]['message']['content'])
         
-    def _run(self, num_requests):
+    def execute(self, num_requests):
         """Run the assistant and save the responses to a file."""
         for i in tqdm(range(num_requests)):
             self._submit_request()
 
+        self.write_out_file()
+
+    def write_out_file(self):
         with open(self.out_file,"w") as writer:
-            for i,t in enumerate(self.data_dict['responses']):
-                writer.write(f"###\n")
-                writer.write(f"Response: {i}\n")
+            for t in self.data_dict['responses']:
                 writer.writelines(t)
-                writer.write(f"###\n\n")
+
