@@ -1,4 +1,4 @@
-from OpenAIAssistant import OpenAIAssistant
+from GPTPipelines.LLMs.OpenAIAssistant import OpenAIAssistant
 
 class IdeaGenerator(OpenAIAssistant):
     

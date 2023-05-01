@@ -1,4 +1,4 @@
-from OpenAIAssistant import OpenAIAssistant
+from GPTPipelines.LLMs.OpenAIAssistant import OpenAIAssistant
 
 class Writer(OpenAIAssistant):
     def __init__(self, **kwargs):
