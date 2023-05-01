@@ -1,15 +1,30 @@
-from PipeFilter import *
+from OpenAIAssistant import OpenAIAssistant
 
-class IdeaGenerator(Filter):
+class IdeaGenerator(OpenAIAssistant):
     
-    def __init__(self, api_key: str, out_file: str,idea_seed_prompt:str, json_fields:str,field_word_limit=50, num_requests=1, model="gpt-3.5-turbo", temperature=0.7, max_tokens=500):
-        super().__init__(api_key, out_file, num_requests, model, temperature, max_tokens)
+    def __init__(self, **kwargs):
+        """
+        A class for generating ideas using OpenAI's GPT-3 API.
+
+        Args:
+            **kwargs: Additional keyword arguments to pass to the parent class.
+                idea_seed_prompt (str): The prompt to use for generating ideas. Defaults to "Ideas that help me realize I didnt provide a prompt."
+                json_fields (str): The fields to include in the JSON response. Defaults to "None".
+                field_word_limit (int): The maximum number of words allowed in each field of the JSON response. Defaults to 100.
+        """
+        super().__init__(**kwargs)
         
-        self.data_dict['idea_seed_prompt'] = idea_seed_prompt
-        self.data_dict['json_fields'] = json_fields
-        self.data_dict['field_word_limit'] = field_word_limit
+        self.data_dict['idea_seed_prompt'] = kwargs.get("idea_seed_prompt", "Ideas that help me realize I didnt provide a prompt.")
+        self.data_dict['json_fields'] = kwargs.get("json_fields","None")
+        self.data_dict['field_word_limit'] = kwargs.get("field_word_limit",100)
     
     def generate_prompt(self) -> str:
+        """
+        Generate a prompt for the user to follow when generating an idea.
+
+        Returns:
+            str: The generated prompt.
+        """
         previous = '\n'.join(self.data_dict['responses'])
         prompt = f"""Write a new idea following prompt delimited by triple backticks.
 
@@ -32,17 +47,29 @@ class IdeaGenerator(Filter):
         """
         return prompt
     
-        
-class IdeaRanker(Filter):
-    def __init__(self, api_key: str, out_file: str, ranking_prompt:str, json_fields:str, num_requests=1, model="gpt-3.5-turbo", temperature=0.7, max_tokens=500):
-        super().__init__(api_key, out_file, num_requests, model, temperature, max_tokens)
-        
-        self.data_dict['ranking_prompt'] = ranking_prompt
-        self.data_dict['json_fields'] = json_fields
+    
+class IdeaRanker(OpenAIAssistant):
+    def __init__(self, **kwargs):
+        """
+        A class for ranking ideas generated using OpenAI's GPT-3 API.
+
+        Args:
+            **kwargs: Additional keyword arguments to pass to the parent class.
+                ranking_prompt (str): The prompt to use for ranking ideas. Defaults to "None".
+                json_fields (str): The fields to include in the JSON response. Defaults to "None".
+        """
+        super().__init__(**kwargs)
+        self.data_dict['ranking_prompt'] = kwargs.get("ranking_prompt","None")
+        self.data_dict['json_fields'] = kwargs.get("json_fields","None")
         
         
     def generate_prompt(self) -> str:
-        
+        """
+        Generate a prompt for the user to follow when ranking ideas.
+
+        Returns:
+            str: The generated prompt.
+        """
         prompt = f"""
         The provided ideas is delimited by ```triple backticks``` 
         The provided prompt is delimited by <<<angle brackets>>>
@@ -65,4 +92,3 @@ class IdeaRanker(Filter):
                 
         """
         return prompt
-    

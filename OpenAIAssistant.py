@@ -1,18 +1,33 @@
 import openai
 from tqdm import tqdm
+from PipeFilter import Filter
 
+class OpenAIAssistant(Filter):
+    def __init__(self, **kwargs):
+        """
+        A class that uses the OpenAI API to generate text based on a prompt.
 
-class OpenAIAssistant:
-    def __init__(self, api_key: str,out_file: str, model = "gpt-3.5-turbo", temperature=0.0, max_tokens=2048,system_message:str = "You are a helpful assistant", debug_prompt=True):
-        openai.api_key = api_key
-        self.model = model
-        self.temperature = temperature
-        self.max_tokens = max_tokens
-        self.system_message = system_message
+        Args:
+            api_key (str): The OpenAI API key.
+            model (str, optional): The name of the OpenAI model to use. Defaults to 'gpt-3.5-turbo'.
+            temperature (float, optional): Controls the "creativity" of the generated text. Higher values result in more creative responses. Defaults to 0.0.
+            max_tokens (int, optional): The maximum number of tokens (words) in the generated response. Defaults to 2048.
+            system_message (str, optional): The message to display as the "system" role in the chat. Defaults to 'You are a helpful assistant'.
+            out_file (str): The path to the output file where the generated text will be saved.
+            debug_prompt (bool, optional): Whether or not to save the last prompt used to generate text to a separate file. Defaults to True.
+            num_requests (int, optional): The number of requests to make to the OpenAI API. Defaults to 1.
+        """
+        super().__init__()
+        openai.api_key = kwargs['api_key']
+        self.model = kwargs.get('model', 'gpt-3.5-turbo')
+        self.temperature = kwargs.get('temperature', 0.0)
+        self.max_tokens = kwargs.get('max_tokens', 2048)
+        self.system_message = kwargs.get('system_message', 'You are a helpful assistant')
         self.data_dict = {'responses': []}
-        self.out_file = out_file
-        self.debug_prompt = debug_prompt
-        
+        self.out_file = kwargs['out_file']
+        self.debug_prompt = kwargs.get('debug_prompt', True)
+        self.num_requests = kwargs.get('num_requests', 1)
+            
 
     def generate_prompt(self) -> str:
         """Return a prompt string.
@@ -26,7 +41,6 @@ class OpenAIAssistant:
         
     def _submit_request(self):
         """Submit a request to the OpenAI API and store the response in `self.data_dict`."""
-
         prompt = self.generate_prompt()
         response = openai.ChatCompletion.create(
             model=self.model,
@@ -40,17 +54,24 @@ class OpenAIAssistant:
         self.last_prompt = prompt
 
     def process_response(self, response):
+        """Process the response from the OpenAI API and add it to `self.data_dict`."""
         self.data_dict['responses'].append(response['choices'][0]['message']['content'])
         
-    def execute(self, num_requests):
+    def run(self):
         """Run the assistant and save the responses to a file."""
-        for i in tqdm(range(num_requests)):
+        super().run()
+        
+        if self.input_filter is not None:
+            with open(self.input_filter.out_file,"r") as file:
+                self.data_dict['input_filter_out_file'] = file.read()
+                
+        for _ in tqdm(range(self.num_requests)):
             self._submit_request()
-
+                
         self.write_out_file()
 
     def write_out_file(self):
-
+        """Write the generated text to the output file."""
         with open(self.out_file,"w") as writer:
             for t in self.data_dict['responses']:
                 writer.writelines(t)
@@ -58,4 +79,3 @@ class OpenAIAssistant:
         if(self.debug_prompt):
            with open(self.out_file+"P","w") as writer:
                 writer.writelines(self.last_prompt)
-    

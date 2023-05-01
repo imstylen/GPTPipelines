@@ -12,37 +12,37 @@ def main():
     ###########################
     # Plan the Article
     ###########################
-    idea_generator = IdeaGenerator(                               
-        API_KEY,
-        "out/ideas.txt",                                   \
-        idea_seed_prompt=
-            """
+    kwargs = {
+        "api_key": API_KEY,
+        "out_file": "out/ideas.txt",
+        "idea_seed_prompt": """
             Birthday parties for a kid who loves science.
-            """,                                                  \
-        json_fields = "title, description, required_materials, setup_instructions",
-        num_requests=3,
-        field_word_limit=100
-        )
+        """,
+        "json_fields": "title, description, required_materials, setup_instructions",
+        "num_requests": 3,
+        "field_word_limit": 100
+    }
 
-    idea_ranker = IdeaRanker( 
-        API_KEY,
-        "out/ranked_ideas.txt",               \
-        ranking_prompt= 
-            """
-            Provide only the top idea after sorting from least to most complex from the perspective of the busy parent who has to set it up.
-            """, 
-        json_fields="Rank, title, description, required_materials, setup_instructions"
-        )
+    idea_generator = IdeaGenerator(**kwargs)
+        
+    kwargs = {
+        'api_key': API_KEY,
+        'out_file': "out/ranked_ideas.txt",
+        'ranking_prompt': "Provide only the top idea after sorting from least to most complex from the perspective of the busy parent who has to set it up.",
+        'json_fields': "Rank, title, description, required_materials, setup_instructions"
+    }
+
+    idea_ranker = IdeaRanker(**kwargs)
+
     
-    article_outliner = Writer(
-        API_KEY,
-        "out/article_outline.txt",
-        writing_prompt=
-            """
-                write a detailed outline divided into 3 sections for an web article intended for busy parents of young children on the rank 1 party idea.
-            """
-        )
-    
+    kwargs = {
+        'api_key': API_KEY,
+        'out_file': "out/article_outline.txt",
+        'writing_prompt': "write a detailed outline divided into 3 sections for an web article intended for busy parents of young children on the rank 1 party idea."
+    }
+
+    article_outliner = Writer(**kwargs)
+
     
     pipeline = []
     pipeline.append(Pipe(idea_generator, idea_ranker))
@@ -54,25 +54,24 @@ def main():
     writers = []
     editors = []
     for i in range (1,4):
-        article_writer = Writer(
-            API_KEY,
-            f"out/article{i}_draft.txt",
-            writing_prompt=
-                f"""
-                    write the full text for only section {i} of the web article. Use no more than 1000 words. The article is based on the provided outline.This section will be combined with the others to form the full article.
-                """
-            )
+        kwargs = {
+            'api_key': API_KEY,
+            'out_file': f"out/article{i}_draft.txt",
+            'writing_prompt': f"write the full text for only section {i} of the web article. Use no more than 1000 words. The article is based on the provided outline.This section will be combined with the others to form the full article."
+        }
+
+        article_writer = Writer(**kwargs)
+
         writers.append(article_writer)
         
-        article_editor = Writer(
-            API_KEY,
-            f"out/article{i}_edited.txt",
-            writing_prompt=
-                f"""
-                    edit the article section to maximize the reader's comprehension, and use a fun tone suitable for a birthday party. This section will be combined with the others to form the full article.
-                """
-            
-            )
+        kwargs = {
+            'api_key': API_KEY,
+            'out_file': f"out/article{i}_edited.txt",
+            'writing_prompt': f"edit the article section to maximize the reader's comprehension, and use a fun tone suitable for a birthday party. This section will be combined with the others to form the full article."
+        }
+
+        article_editor = Writer(**kwargs)
+
         editors.append(article_editor)
         
         pipeline.append(Pipe(article_outliner, article_writer))

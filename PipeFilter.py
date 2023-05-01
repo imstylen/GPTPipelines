@@ -1,30 +1,34 @@
-from OpenAIAssistant import OpenAIAssistant
+class Filter:
+    def __init__(self):
+        """
+        A base class for filters that can be used in a pipeline.
 
-class Filter(OpenAIAssistant):
-    def __init__(self, api_key: str, out_file: str, num_requests = 1, model="gpt-3.5-turbo", temperature=0.0, max_tokens=2048,system_message:str = "you are a helpful assistant"):
-        super().__init__(api_key, out_file, model, temperature, max_tokens, system_message)
+        Attributes:
+            did_run (bool): Whether or not the filter has been run.
+            input_filter (Filter, optional): The input filter to use in a pipeline. Defaults to None.
+        """
         self.did_run = False
-        self.num_requests = num_requests
         self.input_filter = None
         
     def run(self):
-        if self.input_filter is not None:
-            with open(self.input_filter.out_file,"r") as file:
-                self.data_dict['input_filter_out_file'] = file.read()
-                
-                
-        self.execute(self.num_requests)
+        """Run the filter."""
         self.did_run = True
         
 class Pipe:
     def __init__(self, input_filter: Filter, output_filter: Filter):
+        """
+        A class representing a pipeline between two filters.
+
+        Args:
+            input_filter (Filter): The input filter for the pipeline.
+            output_filter (Filter): The output filter for the pipeline.
+        """
         self.input_filter = input_filter
-        
         self.output_filter = output_filter
         self.output_filter.input_filter = input_filter
         
-        
     def execute(self):
+        """Execute the pipeline."""
         if not self.input_filter.did_run:
             self.input_filter.run()
             
