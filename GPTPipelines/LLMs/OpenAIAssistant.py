@@ -13,16 +13,12 @@ class OpenAIAssistant(LLMInterface):
         self.system_message = kwargs.get('system_message', 'You are a helpful assistant')
         self.data_dict['responses'] = []
         self.out_file = kwargs['out_file']
-        self.debug_prompt = kwargs.get('debug_prompt', True)
+        self.debug_prompt = kwargs.get('debug_prompt', False)
         self.num_requests = kwargs.get('num_requests', 1)
             
     def run(self):
         """Run the assistant and save the responses to a file."""
         super().run()
-        
-        if self.input_filter is not None:
-            with open(self.input_filter.out_file,"r") as file:
-                self.data_dict['input_filter_out_file'] = file.read()
                 
         for _ in tqdm(range(self.num_requests)):
             self._submit_request()

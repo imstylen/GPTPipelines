@@ -2,16 +2,9 @@ from GPTPipelines.Filters.IdeaPipelineFilters import IdeaGenerator, IdeaRanker
 from GPTPipelines.Core.PipeFilter import Pipe
 from keychain import API_KEY
 from GPTPipelines.Filters.Util.WriterFilter import WriterFilter
+from GPTPipelines.Core.Pipeline import Pipeline
 
 def main():
-    """
-    This function is the entry point of the program. It generates ideas for a birthday party and ranks them based on complexity. Then it creates an outline for a web article about the top-ranked idea and divides the article into three sections. Finally, writes and edits each section of the article, and assembles the final article.
-    """
-
-    ###########################
-    # Plan the Article
-    ###########################
-
     # Set up the IdeaGenerator object with the necessary arguments
     idea_generator_kwargs = {
         "api_key": API_KEY,
@@ -55,13 +48,9 @@ def main():
     article_outliner = WriterFilter(**outliner_kwargs)
 
     # Set up the pipeline to connect the objects
-    pipeline = []
-    pipeline.append(Pipe(idea_generator, idea_ranker))
-    pipeline.append(Pipe(idea_ranker, article_outliner))
-
-    ###########################
-    # Write the Article
-    ###########################
+    pipeline = Pipeline()
+    pipeline.add_pipe(Pipe(idea_generator, idea_ranker))
+    pipeline.add_pipe(Pipe(idea_ranker, article_outliner))
 
     writers = []
     editors = []
@@ -86,13 +75,11 @@ def main():
         editors.append(article_editor)
 
         # Set up the pipeline to connect the Writer and Editor objects to the article outline
-        pipeline.append(Pipe(article_outliner, article_writer))
-        pipeline.append(Pipe(article_writer, article_editor))
+        pipeline.add_pipe(Pipe(article_outliner, article_writer))
+        pipeline.add_pipe(Pipe(article_writer, article_editor))
 
     # Execute the pipeline
-    for i, pipe in enumerate(pipeline):
-        print(f"Step {i} of {len(pipeline)-1}:")
-        pipe.execute()
+    pipeline.execute()
 
     # Assemble the final article by combining the edited sections
     print("Assembling Articles...")
@@ -100,7 +87,7 @@ def main():
     for editor in editors:
         with open(editor.out_file, "r") as reader:
             full_article_text += "\n" + reader.read()
-        with open("out/FinalArticle.txt", "w") as writer:
-            writer.writelines(full_article_text)
+    with open("out/FinalArticle.txt", "w") as writer:
+        writer.writelines(full_article_text)
 
     print("Done!")
