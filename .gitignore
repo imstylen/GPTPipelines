@@ -3,3 +3,5 @@ keychain.py
 __pycache__/ChatGPTRequest.cpython-311.pyc
 __pycache__/
 out/
+DevTesting/Chroma/
+*.pdf

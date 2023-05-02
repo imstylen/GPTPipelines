@@ -70,6 +70,7 @@ class IdeaRanker(OpenAIAssistant):
         Returns:
             str: The generated prompt.
         """
+        
         prompt = f"""
         The provided ideas is delimited by ```triple backticks``` 
         The provided prompt is delimited by <<<angle brackets>>>
@@ -87,8 +88,17 @@ class IdeaRanker(OpenAIAssistant):
         
         Take the following steps:
         1. for each idea, provide a 1 sentence summary of the advantages and disadvantages of the idea with respect to the provided prompt.
-        2. Provide your final ranking using your thoughts from step 1. Format your response to this step as json with the following fields: 
-        *{self.data_dict['json_fields']}*
+        
+        2. Provide your final ranking using your thoughts from step 1. Format your response to this step as json with the following fields: *{self.data_dict['json_fields']}*
+        Example Response for step 2:
+        Step 2:
+        Json - 
+        {{
+          
+          field1: ...,
+          field2: ...  
+    
+        }}
                 
         """
         return prompt

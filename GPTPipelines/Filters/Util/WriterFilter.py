@@ -1,6 +1,6 @@
 from GPTPipelines.LLMs.OpenAIAssistant import OpenAIAssistant
 
-class Writer(OpenAIAssistant):
+class WriterFilter(OpenAIAssistant):
     def __init__(self, **kwargs):
         """
         A class for generating writing prompts using OpenAI's GPT-3 API.
@@ -20,6 +20,9 @@ class Writer(OpenAIAssistant):
         Returns:
             str: The generated prompt.
         """
+        
+        ref_material = self.data_dict['input_filter_out_file']
+        
         prompt = f"""
         The provided prompt is delimited by <<<angle brackets>>>
         The provided reference material is delimited by ```triple backticks``` 
@@ -30,7 +33,7 @@ class Writer(OpenAIAssistant):
         >>>
         
         ```reference material:
-        {self.data_dict['input_filter_out_file']}
+        {ref_material}
         ```
  
         """
