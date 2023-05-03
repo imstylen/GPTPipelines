@@ -19,7 +19,7 @@
             "request": "launch",
             "program": "Main.py",
             "console": "integratedTerminal",
-            "justMyCode": true
+            "justMyCode": false
         }
     ]
 }

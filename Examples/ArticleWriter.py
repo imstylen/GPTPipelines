@@ -1,7 +1,7 @@
 from GPTPipelines.Filters.IdeaPipelineFilters import IdeaGenerator, IdeaRanker
 from GPTPipelines.Core.PipeFilter import Pipe
 from keychain import API_KEY
-from GPTPipelines.Filters.Util.WriterFilter import WriterFilter
+from GPTPipelines.Filters.UtilFilters.WriterFilter import WriterFilter
 from GPTPipelines.Core.Pipeline import Pipeline
 
 def main():

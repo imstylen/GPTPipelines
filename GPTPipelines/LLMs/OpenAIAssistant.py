@@ -1,6 +1,7 @@
 import openai
 from tqdm import tqdm
 from GPTPipelines.Core.LLMInterface import LLMInterface
+from tenacity import retry, wait_random_exponential, stop_after_attempt, retry_if_not_exception_type
 
 class OpenAIAssistant(LLMInterface):
     def __init__(self, **kwargs):
@@ -15,6 +16,7 @@ class OpenAIAssistant(LLMInterface):
         self.out_file = kwargs['out_file']
         self.debug_prompt = kwargs.get('debug_prompt', False)
         self.num_requests = kwargs.get('num_requests', 1)
+        self.output = ''
             
     def run(self):
         """Run the assistant and save the responses to a file."""
@@ -25,6 +27,8 @@ class OpenAIAssistant(LLMInterface):
                 
         self.write_out_file()
         
+    # let's make sure to not retry on an invalid request, because that is what we want to demonstrate
+    @retry(wait=wait_random_exponential(min=1, max=20), stop=stop_after_attempt(6), retry=retry_if_not_exception_type(openai.InvalidRequestError))    
     def _submit_request(self):
         """Submit a request to the OpenAI API and store the response in `self.data_dict`."""
         prompt = self.generate_prompt()
@@ -55,9 +59,11 @@ class OpenAIAssistant(LLMInterface):
         
     def write_out_file(self):
         """Write the generated text to the output file."""
+        
         with open(self.out_file,"w") as writer:
             for t in self.data_dict['responses']:
                 writer.writelines(t)
+                self.output += t + '\n'
 
         if(self.debug_prompt):
            with open(self.out_file+"P","w") as writer:

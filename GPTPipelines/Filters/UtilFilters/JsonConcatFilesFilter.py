@@ -17,10 +17,14 @@ class JsonConcatFilesFilter(Filter):
         
         for key, file in self.key_data_pairs:
             with open(file, "r") as reader:
-                data[key] = reader.read().replace("\n"," ")
-                
+                data[key] = reader.read()
+        
+        # Replace escaped newline characters with actual new lines
+        data_str = json.dumps(data, indent=4, separators=(", ", ": "), ensure_ascii=False)
+        data_str = data_str.replace('\\n', '\n')        
+        
         with open(self.out_file, "w") as writer:
-            writer.write(json.dumps(data,indent=4,separators=(", ", ": ")))
+            writer.write(data_str)
 
     
         

@@ -1,9 +1,9 @@
 from GPTPipelines.Core.PipeFilter import Pipe
 from keychain import API_KEY
-from GPTPipelines.Filters.Util.WriterFilter import WriterFilter
+from GPTPipelines.Filters.UtilFilters.WriterFilter import WriterFilter
 from GPTPipelines.Core.Pipeline import Pipeline
-from GPTPipelines.Filters.Util.JsonConcatFilesFilter import JsonConcatFilesFilter
-from GPTPipelines.Filters.Util.FileReaderFilter import FileReaderFilter
+from GPTPipelines.Filters.UtilFilters.JsonConcatFilesFilter import JsonConcatFilesFilter
+from GPTPipelines.Filters.UtilFilters.FileReaderFilter import FileReaderFilter
 
 
 def main():

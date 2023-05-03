@@ -3,7 +3,7 @@ from GPTPipelines.LLMs.OpenAIAssistant import OpenAIAssistant
 class WriterFilter(OpenAIAssistant):
     def __init__(self, **kwargs):
         """
-        A class for generating writing prompts using OpenAI's GPT-3 API.
+        A class for generating discourse based on a writing prompt, and reference material.
 
         Args:
             **kwargs: Additional keyword arguments to pass to the parent class.
