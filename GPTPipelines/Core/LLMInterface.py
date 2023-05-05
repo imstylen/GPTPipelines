@@ -8,7 +8,7 @@ class LLMInterface(Filter, ABC):
 
     def __init__(self):
         super().__init__()
-        self.data_dict = {}
+        self.prompt_content = {}
     @abstractmethod
     def run(self):
         super().run()

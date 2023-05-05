@@ -30,9 +30,9 @@ Example step response:
     class: "Dog",
     parent_class:"Animal",
     other_dependencies: [House, Family]
-    class_methods: ["bark()"],
+    unique_class_methods: ["bark()"],
     parent_method_overrides: [eat(food), poop(), sleep(time)],
-    properties: ["family (Family), house (House), breed (string), age (int)]
+    properties: ["family:Family), house:House:, breed:string, age:int:]
     description: "A 'Dog' animal that belongs to a house, with a family"
     }, ...
 
@@ -53,6 +53,8 @@ Example step response:
 
 ]
 ``` end json function format
+
+-- Write a potential next step to refactor this file.
 
 >>>
 

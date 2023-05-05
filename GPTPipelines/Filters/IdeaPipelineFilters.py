@@ -1,6 +1,6 @@
-from GPTPipelines.LLMs.OpenAIAssistant import OpenAIAssistant
+from GPTPipelines.LLMs.OpenAI.ChatGPTFilter import ChatGPTFilter
 
-class IdeaGenerator(OpenAIAssistant):
+class IdeaGenerator(ChatGPTFilter):
     
     def __init__(self, **kwargs):
         """
@@ -14,9 +14,9 @@ class IdeaGenerator(OpenAIAssistant):
         """
         super().__init__(**kwargs)
         
-        self.data_dict['idea_seed_prompt'] = kwargs.get("idea_seed_prompt", "Ideas that help me realize I didnt provide a prompt.")
-        self.data_dict['json_fields'] = kwargs.get("json_fields","None")
-        self.data_dict['field_word_limit'] = kwargs.get("field_word_limit",100)
+        self.prompt_content['idea_seed_prompt'] = kwargs.get("idea_seed_prompt", "Ideas that help me realize I didnt provide a prompt.")
+        self.prompt_content['json_fields'] = kwargs.get("json_fields","None")
+        self.prompt_content['field_word_limit'] = kwargs.get("field_word_limit",100)
     
     def generate_prompt(self) -> str:
         """
@@ -25,12 +25,12 @@ class IdeaGenerator(OpenAIAssistant):
         Returns:
             str: The generated prompt.
         """
-        previous = '\n'.join(self.data_dict['responses'])
+        previous = '\n'.join(self.prompt_content['responses'])
         prompt = f"""Write a new idea following prompt delimited by triple backticks.
 
         prompt:
         ```
-        {self.data_dict['idea_seed_prompt']}
+        {self.prompt_content['idea_seed_prompt']}
         ```
         previous responses:
         ###
@@ -39,16 +39,16 @@ class IdeaGenerator(OpenAIAssistant):
         
         format your response as json with the following fields:
         ###
-        {self.data_dict['json_fields']}
+        {self.prompt_content['json_fields']}
         ###
         
-        limit the length of your response in any field to {self.data_dict['field_word_limit']}
+        limit the length of your response in any field to {self.prompt_content['field_word_limit']}
         
         """
         return prompt
     
     
-class IdeaRanker(OpenAIAssistant):
+class IdeaRanker(ChatGPTFilter):
     def __init__(self, **kwargs):
         """
         A class for ranking ideas generated using OpenAI's GPT-3 API.
@@ -59,8 +59,8 @@ class IdeaRanker(OpenAIAssistant):
                 json_fields (str): The fields to include in the JSON response. Defaults to "None".
         """
         super().__init__(**kwargs)
-        self.data_dict['ranking_prompt'] = kwargs.get("ranking_prompt","None")
-        self.data_dict['json_fields'] = kwargs.get("json_fields","None")
+        self.prompt_content['ranking_prompt'] = kwargs.get("ranking_prompt","None")
+        self.prompt_content['json_fields'] = kwargs.get("json_fields","None")
         
         
     def generate_prompt(self) -> str:
@@ -79,17 +79,17 @@ class IdeaRanker(OpenAIAssistant):
         *{self.input_filter.data_dict['json_fields']}*
         
         <<<Prompt:
-        {self.data_dict['ranking_prompt']}
+        {self.prompt_content['ranking_prompt']}
         >>>
         
         ```Ideas:
-        {self.data_dict['input_filter_out_file']}
+        {self.prompt_content['input_filter_out_file']}
         ```
         
         Take the following steps:
         1. for each idea, provide a 1 sentence summary of the advantages and disadvantages of the idea with respect to the provided prompt.
         
-        2. Provide your final ranking using your thoughts from step 1. Format your response to this step as json with the following fields: *{self.data_dict['json_fields']}*
+        2. Provide your final ranking using your thoughts from step 1. Format your response to this step as json with the following fields: *{self.prompt_content['json_fields']}*
         Example Response for step 2:
         Step 2:
         Json - 

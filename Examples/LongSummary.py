@@ -7,8 +7,6 @@ from GPTPipelines.Core.Pipeline import Pipeline
 
 def main():
     
-    
-
     summarizer_kwargs = {
         'api_key': API_KEY,
         'out_file': "out/summary.txt",
@@ -18,12 +16,12 @@ def main():
             """
     }
     
-    file_reader_filter = FileReaderFilter("out/wiki.txt")
+    file_reader_filter = FileReaderFilter("out/LongSummary/wiki.txt")
     long_summary_filter = LongSummaryFilter(**summarizer_kwargs)
     
     pipe1 = Pipe(file_reader_filter,long_summary_filter)
     
-    summarizer_kwargs['out_file'] = "out/summary2.txt"
+    summarizer_kwargs['out_file'] = "out/LongSummary/summary2.txt"
     long_summary_filter2 = LongSummaryFilter(**summarizer_kwargs)
     
     pipe2 = Pipe(long_summary_filter,long_summary_filter2)

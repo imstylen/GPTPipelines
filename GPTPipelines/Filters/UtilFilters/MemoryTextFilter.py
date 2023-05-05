@@ -4,7 +4,7 @@ class MemoryTextFilter(Filter):
     
     def __init__(self, out_file, text):
         super().__init__() 
-        self.data_dict['out_file'] = out_file
+        self.prompt_content['out_file'] = out_file
         self.out_file = out_file
         self.text = text
         

@@ -1,0 +1,11 @@
+The provided prompt is delimited by <<<angle brackets>>>
+The provided reference material is delimited by ```triple backticks``` 
+
+<<<Prompt:
+Use the provided reference material as the basis for your response.
+{{ writing_prompt }}
+>>>
+
+```reference material:
+{{ input_filter_out_file }}
+```

@@ -25,7 +25,7 @@ Complete the following steps:
 2. Summarize the changes that need to be made to incorporate this feedback into the code base.
 3. Write skeleton classes for the newly created, and modified classes after the feedback has been incorporated.
 
-+++ Feedback: Refactor the OpenAIAssistant class to follow the Single Responsibility Principle by separating the responsibilities of submitting requests, processing responses, and writing output to a file into separate classes.+++
++++ Feedback: - Refactor the IdeaGenerator and IdeaRanker classes into a common parent class to reduce code duplication and improve maintainability.+++
 
 The format of the reports used to create the feedback is shown below surrounded by <<<triple angle brackets>>>. Each section begins with two hyphens "--".
 

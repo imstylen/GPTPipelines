@@ -7,7 +7,7 @@ class Filter:
             did_run (bool): Whether or not the filter has been run.
             input_filter (Filter, optional): The input filter to use in a pipeline. Defaults to None.
         """
-        self.data_dict = dict()
+        self.prompt_content = {}
         self.did_run = False
         self.input_filter = None
         self.out_file = None
@@ -39,6 +39,6 @@ class Pipe:
             self.input_filter.run()
             
         with open(self.input_filter.out_file,"r") as file:
-            self.output_filter.data_dict['input_filter_out_file'] = file.read()    
+            self.output_filter.prompt_content['input_filter_out_file'] = file.read()    
             
         self.output_filter.run()

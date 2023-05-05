@@ -19,9 +19,10 @@ def main():
     
     prompt = """
 Respond in the following steps.
+
 1. For each file: in less that 100 words, summarize the main architectural aspects of the file including: inheritance, dependencies, patterns, etc.
 2. Summarize the structure of the architecture of the code base as a whole.
-3. Provide feedback on the architecture with respect to solid principles.
+3. Provide targeted feedback on the architecture's strengths and weaknesses.
 4. Provide a thorough list of specific recommendations with examples to optimize the architecture of this code base.
 
 The format of the provided reports is shown below surrounded by <<<tripple angle brackets>>>. Each section begins with two hyphens "--".
